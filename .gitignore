@@ -1,0 +1,23 @@
+# Dependencies
+Project/node_modules/
+
+# Next.js build output
+Project/.next/
+Project/out/
+
+# Environment files
+Project/.env.local
+Project/.env.development.local
+Project/.env.production.local
+Project/.env.staging.local
+
+# C# / .NET build outputs
+**/bin/
+**/obj/
+**/.vs/
+**/*.user
+
+# External resources / Spec files
+spec.zip
+spec_temp/
+spec_text.txt
