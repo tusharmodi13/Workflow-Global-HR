@@ -3,6 +3,7 @@
 import { FormEvent, Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "../../../context/SessionContext";
+import { useUiStore, Role } from "../../../stores/uiStore";
 
 export default function LoginPage() {
 	return (
@@ -16,6 +17,7 @@ function LoginForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { login } = useSession();
+	const { setRole } = useUiStore();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
@@ -27,6 +29,20 @@ function LoginForm() {
 		setLoading(true);
 		try {
 			await login({ email, password });
+			
+			// Initialize the Role-Based Access Control (RBAC) context
+			// Defaulting to 'Admin' if email contains "admin", 'Manager' if "manager", 'HR' if "hr", otherwise 'Employee'
+			const emailLower = email.toLowerCase();
+			let defaultRole: Role = "Employee";
+			if (emailLower.includes("admin")) {
+				defaultRole = "Admin";
+			} else if (emailLower.includes("manager")) {
+				defaultRole = "Manager";
+			} else if (emailLower.includes("hr")) {
+				defaultRole = "HR";
+			}
+			setRole(defaultRole);
+
 			const next = searchParams.get("next") || "/";
 			router.replace(next);
 		} catch (err: any) {
